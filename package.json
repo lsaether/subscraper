@@ -1,7 +1,7 @@
 {
-  "name": "ts-boilerplate",
+  "name": "subscraper",
   "version": "1.0.0",
-  "description": "Opinionated TypeScript boilerplate.",
+  "description": "Basic and rough scraping tool for Substrate based blockchains.",
   "main": "src/index.ts",
   "scripts": {
     "build": "tsc --outDir build",
@@ -27,15 +27,20 @@
     "typescript": "^3.8.3"
   },
   "dependencies": {
+    "@polkadot/api": "^1.11.2",
+    "@polkadot/types": "^1.11.2",
+    "@polkadot/util": "^2.8.1",
+    "@polkadot/util-crypto": "^2.8.1",
     "commander": "^5.0.0",
+    "nedb-promises": "^4.0.3",
     "winston": "^3.2.1"
   },
   "ava": {
-		"extensions": [
-			"ts"
-		],
-		"require": [
-			"ts-node/register"
-		]
-	}
+    "extensions": [
+      "ts"
+    ],
+    "require": [
+      "ts-node/register"
+    ]
+  }
 }
