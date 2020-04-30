@@ -12,7 +12,7 @@ type StartOptions = {
 };
 
 const createApi = (endpoint: string, types?: string): Promise<ApiPromise> => {
-  if (typeof types === "string") types = JSON.parse(types);
+  if (typeof types === "string" && types.length) types = JSON.parse(types);
 
   return ApiPromise.create({
     provider: new WsProvider(endpoint),

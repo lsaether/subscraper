@@ -1,8 +1,9 @@
 {
   "name": "subscraper",
-  "version": "1.0.0",
+  "version": "0.0.6",
   "description": "Basic and rough scraping tool for Substrate based blockchains.",
   "main": "src/index.ts",
+  "bin": "./bin/index.js",
   "scripts": {
     "build": "tsc --outDir build",
     "clean": "rm -rf build",
