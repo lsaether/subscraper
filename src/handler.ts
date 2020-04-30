@@ -1,7 +1,7 @@
 import { ApiPromise, WsProvider } from "@polkadot/api";
 import { blake2AsU8a } from "@polkadot/util-crypto";
 import { u8aToHex } from "@polkadot/util";
-import { getSpecTypes } from "@polkadot/types/known";
+import { getSpecTypes } from "@polkadot/types-known";
 
 type FullBlockData = {
   number: number;
@@ -36,7 +36,7 @@ class ApiHandler {
   askForClaims = async (addr: string, blockNum: number) => {
     const hash = await this.getBlockHash(blockNum);
     const api = await this.ensureMeta(hash);
-    //@ts-ignore
+
     return api.query.claims.claims.at(hash, addr);
   };
 
@@ -72,7 +72,7 @@ class ApiHandler {
       })
     );
 
-    const extrinsics = block.extrinsics.map((extrinsic, idx) => {
+    const extrinsics: any = block.extrinsics.map((extrinsic, idx) => {
       const {
         method,
         nonce,
@@ -158,7 +158,12 @@ class ApiHandler {
         const meta = await api.rpc.state.getMetadata(hash);
         const chain = await api.rpc.system.chain();
         api.registry.register(
-          getSpecTypes(api.registry, chain, runtimeVersion)
+          getSpecTypes(
+            api.registry,
+            chain,
+            runtimeVersion.specName,
+            runtimeVersion.specVersion
+          )
         );
         api.registry.setMetadata(meta);
       }

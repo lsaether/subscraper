@@ -7,12 +7,16 @@ import Logger from "./Logger";
 
 type StartOptions = {
   db: string;
+  types: string;
   ws: string;
 };
 
-const createApi = (endpoint: string): Promise<ApiPromise> => {
+const createApi = (endpoint: string, types?: string): Promise<ApiPromise> => {
+  if (typeof types === "string") types = JSON.parse(types);
+
   return ApiPromise.create({
     provider: new WsProvider(endpoint),
+    types: types as any,
   });
 };
 
@@ -26,18 +30,24 @@ const roughScrape = async (
   const recentBlock = await handler.fetchBlock(blockHash);
 
   let currentHash = recentBlock.hash;
-  while (currentHash) {
+  while (
+    currentHash !=
+    "0x0000000000000000000000000000000000000000000000000000000000000000"
+  ) {
     const block = await handler.fetchBlock(currentHash);
+    Logger.info(`saving block ${block.number}`);
     db.save(JSON.parse(JSON.stringify(block)));
 
     currentHash = block.parentHash;
   }
+
+  process.exit(0);
 };
 
 const start = async (opts: StartOptions) => {
-  const { db, ws } = opts;
+  const { db, types, ws } = opts;
   Logger.info("Initializing API...");
-  const api = await createApi(ws);
+  const api = await createApi(ws, types);
   const handler = new ApiHandler(api);
   const database = new Db(db);
   await roughScrape(api, handler, database);
@@ -46,6 +56,11 @@ const start = async (opts: StartOptions) => {
 program
   .command("start")
   .option("--db <file>", "The file to store the scraped data.", "scraped.db")
+  .option(
+    "--types <JSON>",
+    "A JSON configuration of the types for the node.",
+    ""
+  )
   .option(
     "--ws <endpoint>",
     "The WebSockets endpoint of the node.",
